@@ -1,0 +1,9 @@
+# Virtualenv ignores
+bin/
+include/
+lib/
+# Django ignores
+*.pyc
+*.log
+*.pot
+apps/settings_local.py
