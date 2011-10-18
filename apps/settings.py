@@ -1,21 +1,17 @@
-# Django settings for apps project.
+import os
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Tyler Ball', 'your_email@example.com'),
 )
+
+PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 MANAGERS = ADMINS
 
-# Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
 TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
@@ -24,26 +20,21 @@ LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
 USE_I18N = True
 
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
 USE_L10N = True
 
-# URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-# List of finder classes that know how to find static files in
-# various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
+
+MEDIA_ROOT = PROJECT_ROOT + 'media/'
+
+STATIC_ROOT = PROJECT_ROOT + 'static/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'fwzu+k^&k#p_uas)5j0dn33$oozx)ovk#)7+6$7r=bjxm(fv@x'
@@ -53,6 +44,15 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
+)
+
+TEMPLATE_DIRS = (
+    os.path.join(PROJECT_ROOT, 'templates/'),
+)
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    PROJECT_ROOT + 'media/static/',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -74,9 +74,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    
+
     # Dependencies
-    
+
     # Local Apps
     'home',
 )
@@ -104,4 +104,7 @@ LOGGING = {
     }
 }
 
-from settings_local import *
+try:
+    from settings_local import *
+except:
+    pass
