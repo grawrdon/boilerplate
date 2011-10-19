@@ -34,7 +34,7 @@ STATICFILES_FINDERS = (
 
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static/')
+STATIC_ROOT = os.path.join(MEDIA_ROOT, 'static/')
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'fwzu+k^&k#p_uas)5j0dn33$oozx)ovk#)7+6$7r=bjxm(fv@x'
@@ -52,7 +52,7 @@ TEMPLATE_DIRS = (
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    PROJECT_ROOT + 'media/static/',
+    PROJECT_ROOT + 'static/',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -103,6 +103,14 @@ LOGGING = {
         },
     }
 }
+
+from settings_pipeline import *
+
+PIPELINE_ROOT = STATIC_ROOT
+
+# Default settings for production
+PIPELINE = False
+PIPELINE_AUTO = False
 
 try:
     from settings_local import *
