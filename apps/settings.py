@@ -32,9 +32,9 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-MEDIA_ROOT = PROJECT_ROOT + 'media/'
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
 
-STATIC_ROOT = PROJECT_ROOT + 'static/'
+STATIC_ROOT = os.path.join(MEDIA_ROOT, 'static/')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -49,7 +49,7 @@ TEMPLATE_DIRS = (
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    PROJECT_ROOT + 'media/static/',
+    PROJECT_ROOT + 'static/',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -100,6 +100,14 @@ LOGGING = {
         },
     }
 }
+
+from settings_pipeline import *
+
+PIPELINE_ROOT = STATIC_ROOT
+
+# Default settings for production
+PIPELINE = False
+PIPELINE_AUTO = False
 
 try:
     from settings_local import *
