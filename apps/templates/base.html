@@ -1,28 +1,56 @@
+{% load compressed %}
+
 <!doctype html>
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
 
-  <title>{# TODO #}</title>
-  <meta name="description" content="TODO">
-  <meta name="author" content="TODO">
+    <title>{# TODO #}</title>
+    <meta name="description" content="TODO">
+    <meta name="author" content="TODO">
 
-  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    {{ compressed_js 'modernizr' }}
+
+    {% block modernizr %}
+    <script type="text/javascript" charset="utf-8">
+        Modernizr.load({
+            load : {
+                'jquery' : '//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'
+                // TODO core scripts
+            },
+            callback : {
+                'jquery' : function () {
+                    if (!window.jQuery) Modernizr.load({
+                        load : {
+                            'jquery-fallback' : // TODO jquery fallback
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+    {% endblock %}
 </head>
 
 <body>
 
   <div id="Container">
     <header>
+        {% block header %}
 
+        {% endblock %}
     </header>
     <div id="Main" role="main">
         {% block content %}
-            
+
         {% endblock %}
     </div>
     <footer>
+        {% block footer %}
 
+        {% endblock %}
     </footer>
   </div> <!--! end of #Container -->
 
@@ -32,6 +60,6 @@
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
     <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
-  
+
 </body>
 </html>
