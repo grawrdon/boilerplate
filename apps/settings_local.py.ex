@@ -17,3 +17,6 @@ DATABASES = {
 ADMINS = (
     ('Tyler Ball', 'tyler@tylerball.net'),
 )
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'TODO:make_this_unique'

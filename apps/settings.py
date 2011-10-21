@@ -36,9 +36,6 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
 
 STATIC_ROOT = os.path.join(MEDIA_ROOT, 'static/')
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'fwzu+k^&k#p_uas)5j0dn33$oozx)ovk#)7+6$7r=bjxm(fv@x'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
