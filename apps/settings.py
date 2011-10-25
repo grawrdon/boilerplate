@@ -49,7 +49,7 @@ TEMPLATE_DIRS = (
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    PROJECT_ROOT + 'static/',
+    os.path.join(PROJECT_ROOT, 'static/'),
 )
 
 MIDDLEWARE_CLASSES = (
@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
 
     # Dependencies
+    'pipeline',
 
     # Local Apps
     'home',
@@ -103,7 +104,7 @@ LOGGING = {
 
 from settings_pipeline import *
 
-PIPELINE_ROOT = STATIC_ROOT
+PIPELINE_ROOT = os.path.join(PROJECT_ROOT, 'static/')
 
 # Default settings for production
 PIPELINE = False

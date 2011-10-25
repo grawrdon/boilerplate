@@ -20,3 +20,13 @@ ADMINS = (
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'TODO:make_this_unique'
+
+MEDIA_URL = '/media/'
+
+STATIC_URL = MEDIA_URL + 'static/'
+
+PIPELINE = False
+PIPELINE_AUTO = False
+PIPELINE_COMPILERS = (
+    #'pipeline.compilers.less.LessCompiler',
+)
