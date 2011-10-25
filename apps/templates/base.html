@@ -11,7 +11,9 @@
     <!-- Mobile viewport optimized: j.mp/bplateviewport -->
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    {{ compressed_js 'modernizr' }}
+    {% compressed_css 'core-styles' %}
+
+    {% compressed_js 'modernizr' %}
 
     {% block modernizr %}
     <script type="text/javascript" charset="utf-8">
@@ -23,9 +25,9 @@
             callback : {
                 'jquery' : function () {
                     if (!window.jQuery) Modernizr.load({
-                        load : {
-                            'jquery-fallback' : // TODO jquery fallback
-                        }
+                       // load : {
+                       //     'jquery-fallback' : // TODO jquery fallback
+                       // }
                     });
                 }
             }
@@ -36,23 +38,23 @@
 
 <body>
 
-  <div id="Container">
-    <header>
-        {% block header %}
+    <div id="Container">
+        <header>
+            {% block header %}
 
-        {% endblock %}
-    </header>
-    <div id="Main" role="main">
-        {% block content %}
+            {% endblock %}
+        </header>
+        <div id="Main" role="main">
+            {% block content %}
 
-        {% endblock %}
-    </div>
-    <footer>
-        {% block footer %}
+            {% endblock %}
+        </div>
+        <footer>
+            {% block footer %}
 
-        {% endblock %}
-    </footer>
-  </div> <!--! end of #Container -->
+            {% endblock %}
+        </footer>
+    </div> <!--! end of #Container -->
 
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
