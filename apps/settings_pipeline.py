@@ -1,9 +1,5 @@
 PIPELINE_VERSION_REMOVE_OLD = True
 
-PIPELINE_COMPILERS = (
-    'pipeline.compilers.less.LessCompiler',
-)
-
 PIPELINE_CSS = {
 
     'core-styles': {
@@ -20,9 +16,9 @@ PIPELINE_CSS = {
 
 PIPELINE_JS = {
 
-    'modernizr-scripts': {
+    'modernizr': {
         'source_filenames': (
-            'lib/modernizr/modernizr.custom.js',
+            'lib/modernizr/modernizr.base.js',
         ),
         'output_filename': 'compiled/js/modernizr.custom.js',
     },
