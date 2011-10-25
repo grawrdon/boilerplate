@@ -11,3 +11,7 @@ env.django_root = os.path.join(env.root_dir, 'apps/')
 
 env.pip_requirements = ["requirements/common.txt"]
 env.pip_requirements_prod = ["requirements/prod.txt"]
+
+def test():
+    with lcd(env.django_root):
+        local('./manage.py test')
