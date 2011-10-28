@@ -7,9 +7,9 @@ DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': '<projectname>',
+        'USER': '<projectname>',
+        'PASSWORD': '<password>',
         'HOST': '',
         'PORT': '',
     }
@@ -20,7 +20,7 @@ ADMINS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'TODO:make_this_unique'
+SECRET_KEY = '<secretkey>'
 
 MEDIA_URL = '/media/'
 
