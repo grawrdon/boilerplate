@@ -1,14 +1,15 @@
 # settings_local.py
 # TODO: cp this file to settings_local.py and fill in the details
+# By default, all values are for a production environment
 
-DEBUG = True
+DEBUG = False
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': '<projectname>',
+        'USER': '<projectname>',
+        'PASSWORD': '<password>',
         'HOST': '',
         'PORT': '',
     }
@@ -19,11 +20,12 @@ ADMINS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'TODO:make_this_unique'
+SECRET_KEY = '<secretkey>'
 
 MEDIA_URL = '/media/'
 
-STATIC_URL = MEDIA_URL + 'static/'
+STATIC_URL = MEDIA_URL + 'static/'  # Production
+# STATIC_URL = '/static/'             # Development
 
 PIPELINE = False
 PIPELINE_AUTO = False
