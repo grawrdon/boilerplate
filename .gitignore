@@ -2,6 +2,7 @@
 bin/
 include/
 lib/
+share/
 # Django ignores
 *.pyc
 *.log
