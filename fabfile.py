@@ -15,3 +15,7 @@ env.pip_requirements_prod = ["requirements/prod.txt"]
 def test():
     with lcd(env.django_root):
         local('./manage.py test')
+
+def getapp(app):
+    local('pip install %s' % app)
+    local('echo %s >> %s' % (app, env.pip_requirements[0]))
