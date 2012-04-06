@@ -104,7 +104,7 @@ LOGGING = {
 
 from settings_pipeline import *
 
-PIPELINE_ROOT = os.path.join(PROJECT_ROOT, 'static/')
+PIPELINE_ROOT = STATIC_ROOT
 
 # Default settings for production
 PIPELINE = False
