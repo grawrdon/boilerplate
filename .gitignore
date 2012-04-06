@@ -8,3 +8,4 @@ share/
 *.log
 *.pot
 apps/settings_local.py
+.vagrant
