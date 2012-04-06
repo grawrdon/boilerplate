@@ -1,9 +1,7 @@
 import os
-import fabric
 from random import Random
 from getpass import getpass
 from fabric.api import *
-from fabric.operations import prompt
 
 
 env.root_dir = os.path.abspath(os.path.dirname(__file__))
@@ -64,3 +62,23 @@ def setup_local():
 def getapp(app):
     local('pip install %s' % app)
     local('echo %s >> %s' % (app, env.pip_requirements[0]))
+
+# Pull a dump of the server's postgres database
+def pulldump():
+    try:
+        cd(env.path + '/dumps/')
+    except:
+        local('mkdir %s/dumps' % env.path)
+    local_dumps = '%s/dumps' % env.root_dir
+    with cd(env.path + '/dumps') and settings(warn_only=True):
+        # Kill off any other dumps made today
+        try:
+            run('rm journal-`date +%F`*')
+            run('pg_dump -h localhost -U postgres --clean --no-owner --no-privileges journal > {}/dumps/journal-`date +%F`.sql'.format(env.directory))
+            with cd('%s/dumps' % env.path):
+                run('tar -czf journal-`date +%F`.tar.gz journal-`date +%F`.sql')
+            local('scp {}:{}/dumps/journal-`date +%F`.tar.gz {}/'.format(env.host_string, env.directory, local_dumps))
+        except:
+            local('scp {}:{}/dumps/journal-`date +%F`.tar.gz {}/'.format(env.host_string, env.directory, local_dumps))
+        local('tar -xzvf {}/journal-`date +%F`.tar.gz'.format(local_dumps))
+    local('./manage.py dbshell < ../dumps/journal-`date +%F`.sql')
