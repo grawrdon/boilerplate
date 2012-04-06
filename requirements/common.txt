@@ -1,4 +1,5 @@
 virtualenv
 Django
 psycopg2==2.0.13
-South==0.7.3
+South
+git+git://github.com/tylerball/django-pipeline.git
