@@ -1,0 +1,57 @@
+server {
+
+    listen 80;
+    server_name <%= production_domain %> *.<%= production_domain %> <%= staging_domain %><% if scope.lookupvar('machine::server_type') == "vagrant" %> localhost<% end %>;
+
+    error_log /var/log/nginx/<%= scope.lookupvar('djangoapp::full_project_name') %>.error.log;
+    access_log /var/log/nginx/<%= scope.lookupvar('djangoapp::full_project_name') %>.access.log;
+
+
+    # Set proxy headers for the passthrough
+    proxy_set_header Host <% if scope.lookupvar('machine::server_type') == 'vagrant' %>$http_host<% else %>$host:$server_port<% end %>;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    # Let the Set-Cookie header through.
+    proxy_pass_header Set-Cookie;
+
+    # Set the timeout to Apache
+    proxy_read_timeout 120;
+
+    <% if scope.lookupvar('machine::server_type') != "vagrant" %>
+    # Live domain only.
+    ## www.domain.com -> domain.com (301 - Permanent)
+    if ($host != '<%= production_domain %>') {
+        rewrite ^/(.*)$ http://<%= production_domain %>/$1 permanent;
+    }
+    <% end %>
+
+    # Max upload size.
+    client_max_body_size 8m;
+
+    <% if scope.lookupvar('machine::server_type') != 'vagrant' %>
+    # We don't serve static under a development environment,
+    # we let the django static serving views do that so we don't
+    # have to run collectstatic after every little change
+    location <%= static_url %> {
+        <% if server_type == 'vagrant' %>
+            alias <%= scope.lookupvar('djangoapp::development_static_path') %>;
+        <% else %>
+            alias <%= scope.lookupvar('djangoapp::production_static_path') %>;
+        <% end %>
+    }
+    <% end %>
+
+    location <%= media_url %> {
+        <% if scope.lookupvar('machine::server_type') == 'vagrant' %>
+            alias <%= scope.lookupvar('djangoapp::development_media_path') %>;
+        <% else %>
+            alias <%= scope.lookupvar('djangoapp::production_media_path') %>;
+        <% end %>
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:81;
+    }
+} # End server
+
