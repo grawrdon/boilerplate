@@ -1,12 +1,12 @@
 define djangoapp::production::setup ($project_path="",
                                      $src_path="",
-                                     $owner="deployer",
+                                     $owner="www-data",
                                      $group="www-data") {
 
     $project_name = $name
-    
+
     exec { "source-checkout":
-        unless  => "test -d $src_path",
+        unless  => "test -d $project_path",
         path    => "/usr/local/bin:/usr/bin:/bin",
         user    => $owner,
         group   => $group,
@@ -18,6 +18,7 @@ define djangoapp::production::setup ($project_path="",
                     File["ssh-private-key"],
                     File[$project_path],
                    ],
+        notfiy => Exec["pyenv::requirements ${project_path}venv/"]
     }
 
     file { "${project_path}current":

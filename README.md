@@ -22,7 +22,8 @@ Requirements
 * PostgreSQL
 * Python 2.6+ (probably)
 * pip (easy\_install pip)
-* [virtualenv][venv] and [virtualenvwradpper][venvw].
+* [virtualenv][venv] and [virtualenvwrapper][venvw].
+* vagrant (optional, but better)
 
 **On the server**:
 
@@ -38,10 +39,7 @@ Installation
     git init
     git remote add origin git@github.com:tylerball/django-boilerplate.git
     git pull origin master
-    pip install -r requirements/dev.txt
-    fab setup_local
-    cd apps
-    ./manage.py runserver
+    vagrant up
 
 ----
 
@@ -53,6 +51,7 @@ Todo:
 * document server setup
 * moar fabric stuff
 * finish integrating Modernizr
+* automate nodejs install for vagrant
 
 Inspiration
 -----------

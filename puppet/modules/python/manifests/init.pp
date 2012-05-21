@@ -3,6 +3,15 @@ class python {
     "build-essential",
     "python-dev",
     "python-setuptools",
+    "python-psycopg2",
+    "python-virtualenv",
+
+    # Imaging
+    "libpq-dev",
+    "libjpeg62-dev",
+    "zlib1g-dev",
+    "libfreetype6-dev",
+    "python-imaging",
   ]
 
   package {

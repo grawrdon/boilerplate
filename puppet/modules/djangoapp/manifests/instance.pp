@@ -7,6 +7,7 @@ define djangoapp::instance(
   $static_url="/static/",
   $media_url="/media/",
   $git_checkout_url="",
+  $db_pass="",
   $requirements=true) {
 
   # If you add any more path variables,
@@ -14,8 +15,8 @@ define djangoapp::instance(
 
   $project_path = "/opt/${project_name}/"
   $venv_path = "${project_path}venv/"
-  $src_path = "${project_path}src/"
-  $requirements_file = "${project_path}requirements/common.txt"
+  $common_requirements_file = "${project_path}current/requirements/common.txt"
+  $dev_requirements_file = "${project_path}current/requirements/dev.txt"
 
   $development_static_path = "${project_path}static/"
   $development_media_path = "${project_path}media/"
@@ -24,54 +25,75 @@ define djangoapp::instance(
 
   $server_type = $machine::server_type
 
-  if !defined(File[$project_path]) {
+  # Here we split depending on if this is a Vagrant
+  # machine or our actual staging/production.
+  if ( $server_type == 'vagrant' ) {
+    $src_path = "/vagrant"
 
-      # Create project level directories.
+    djangoapp::development::setup { $full_project_name:
+      project_path => $project_path,
+      src_path     => $src_path,
+      owner        => "www-data",
+      group        => $group,
+    }
+  } else {
+    $src_path = "${project_path}src/"
 
-      file { $project_path:
+    djangoapp::production::setup { $full_project_name:
+      project_path => $project_path,
+      src_path     => $src_path,
+      owner        => "www-data",
+      group        => $group,
+    }
+  }
+
+  if defined(File[$project_path]) {
+
+    file { $project_path:
+      ensure => directory,
+      owner => $owner,
+      group => $group,
+      mode => 775,
+      require => File["/opt/"],
+    }
+
+    if ( $server_type != 'vagrant') {
+
+      file { $production_static_path:
           ensure  => directory,
           owner   => $owner,
           group   => $group,
-          mode    => 775,
-          require => File[$client_path],
+          mode    => 664, # rw, rw, r
+          require => File[$project_path],
       }
 
-      if ( $server_type != 'vagrant') {
-
-          file { $production_static_path:
-              ensure  => directory,
-              owner   => $owner,
-              group   => $group,
-              mode    => 664, # rw, rw, r
-              require => File[$project_path],
-          }
-
-          file { $production_media_path:
-              ensure  => directory,
-              owner   => $owner,
-              group   => $group,
-              mode    => 664, # rw, rw, r
-              require => File[$project_path],
-          }
+      file { $production_media_path:
+          ensure  => directory,
+          owner   => $owner,
+          group   => $group,
+          mode    => 664, # rw, rw, r
+          require => File[$project_path],
       }
-  }
-
-  # Create the wsgi file.
-  gunicorn::setup { $project_wsgi_path:
-    venv_path               => $venv_path,
-    server_type             => $server_type,
-    python_dir_name         => $python_dir_name,
-    deployment_current_path => $deployment_current_path,
-    deployment_etc_path     => $deployment_etc_path,
-    owner                   => $owner,
-    group                   => $group,
+    }
   }
 
   # Create a virtualenv and run the requirements file.
   pyenv::setup { $venv_path:
     requirements      => true,
-    requirements_file => $requirements_file,
+    common_requirements_file => $common_requirements_file,
+    dev_requirements_file => $dev_requirements_file,
   }
+
+  # Create the wsgi file.
+  #gunicorn::instance { $project_name:
+    #venv_path               => $venv_path,
+    #server_type             => $server_type,
+    #python_dir_name         => $python_dir_name,
+    #deployment_current_path => $deployment_current_path,
+    #deployment_etc_path     => $deployment_etc_path,
+    #owner                   => $owner,
+    #group                   => $group,
+  #}
 
   # Create the site specific nginx conf.
   nginx::site { $project_name:
@@ -83,29 +105,18 @@ define djangoapp::instance(
     static_url => $static_url,
   }
 
-  # Create the MySQL database, this will do
-  # nothing if it already exists.
-  postgres::createdb { $project_name:
-    db_name => $project_name,
-    db_user => $project_name,
-    db_pass => $project_name,
+  postgres::role { $project_name:
+    ensure   => "present",
+    password => $db_pass,
   }
 
-  # Here we split depending on if this is a Vagrant
-  # machine or our actual staging/production.
-  if ( $server_type == 'vagrant' ) {
-    djangoapp::development::setup { $full_project_name:
-      project_path => $project_path,
-      src_path     => $src_path,
-      owner        => "deployer",
-      group        => $group,
-    }
-  } else {
-    djangoapp::production::setup { $full_project_name:
-      project_path => $project_path,
-      src_path     => $src_path,
-      owner        => "deployer",
-      group        => $group,
-    }
+  postgres::database { "${project_name}_staging":
+    ensure => "present",
+    owner  => $project_name,
+  }
+
+  postgres::database { "${project_name}_live":
+    ensure => "present",
+    owner  => $project_name,
   }
 }

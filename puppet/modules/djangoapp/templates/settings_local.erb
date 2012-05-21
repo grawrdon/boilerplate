@@ -1,0 +1,30 @@
+DEBUG = <% if scope.lookupvar('machine::server_type') == "vagrant" %>True<% else %>False<% end %>;
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '<projectname>',
+        'USER': '<projectname>',
+        'PASSWORD': '<password>',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+ADMINS = (
+    ('Tyler Ball', 'tyler@tylerball.net'),
+)
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '<secretkey>'
+
+MEDIA_URL = '/media/'
+
+STATIC_URL = MEDIA_URL + 'static/'  # Production
+# STATIC_URL = '/static/'             # Development
+
+PIPELINE = False
+PIPELINE_AUTO = False
+PIPELINE_COMPILERS = (
+    #'pipeline.compilers.less.LessCompiler',
+)

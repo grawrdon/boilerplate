@@ -1,26 +1,30 @@
 define pyenv::setup(
   $requirements=undef,
-  $requirements_file="") {
-
-  # TODO: Initial requirements loading?
-  # Done with an internally build script for now..
+  $common_requirements_file="",
+  $dev_requirements_file="") {
 
   $venv_path = $name
 
-  # Does not successfully run as deployer for some reason.
-  exec { "pyenv::setup $venv_path":
+  exec { "pyenv::setup ${venv_path}":
     command => "virtualenv ${venv_path}",
     creates => $venv_path,
-    path   => "/usr/local/bin:/usr/bin:/bin",
-    notify => Exec["update distribute and pip in $venv_path"],
-    require => pyenv::package,
+    path    => "/usr/local/bin:/usr/bin:/bin",
+    notify  => [
+      Exec["update distribute and pip in $venv_path"],
+      Exec["pyenv::requirements $venv_path"],
+    ],
+    require => [
+      Package["python-virtualenv"],
+    ]
   }
 
   # Change ownership of the venv after its created.
   exec { "pyenv::setup $venv_path chown":
-    command => "chown -R deployer:www-data $venv_path",
-    path   => "/usr/local/bin:/usr/bin:/bin",
-    require => Exec["pyenv::setup $venv_path"],
+    command     => "chown -R www-data:www-data $venv_path",
+    path        => "/usr/local/bin:/usr/bin:/bin",
+    refreshonly => true,
+    require     => Exec["pyenv::setup ${venv_path}"],
+    subscribe   => Exec["pyenv::setup ${venv_path}"],
   }
 
 # Some newer Python packages require an updated distribute
@@ -31,10 +35,13 @@ define pyenv::setup(
   }
 
   if ($requirements) {
-    exec { "pyenv::requirements $requirements_file":
-      command     => "${venv_path}bin/pip install -r $requiments_file",
+    exec { "pyenv::requirements $venv_path":
+      command     => "${venv_path}bin/pip install -r $common_requirements_file",
+      logoutput   => true,
       refreshonly => true,
-
+      require     => [
+        Exec["pyenv::setup ${venv_path}"],
+      ]
     }
   }
 }

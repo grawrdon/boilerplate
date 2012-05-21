@@ -1,5 +1,6 @@
 # Virtualenv ignores
 bin/
+build/
 include/
 lib/
 share/
@@ -9,3 +10,4 @@ share/
 *.pot
 apps/settings_local.py
 .vagrant
+manifest.pp
