@@ -3,3 +3,4 @@ Django
 psycopg2==2.0.13
 South
 git+git://github.com/tylerball/django-pipeline.git
+django-debug-toolbar
