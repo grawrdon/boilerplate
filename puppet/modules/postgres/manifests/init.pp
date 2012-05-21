@@ -11,14 +11,24 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+class postgres (
+  $version='8.4') {
 
-class postgres {
-  package { [postgresql, postgresql-server]: ensure => installed }
+  package { ["postgresql"]: ensure => installed }
 
-    service { postgresql:
-      ensure => running,
-      enable => true,
-      hasstatus => true,
-      subscribe => [Package[postgresql-server], Package[postgresql]]
+    service { "postgresql-${version}":
+      ensure     => running,
+      enable     => true,
+      hasstatus  => true,
+      hasrestart => true,
+      subscribe  => Package["postgresql"]
+    }
+
+    file { 'pg_hba.conf':
+      path    => "/etc/postgresql/${version}/main/pg_hba.conf",
+      source  => 'puppet:///modules/postgres/pg_hba.conf',
+      mode    => '0640',
+      owner   => 'postgres',
+      require => Package["postgresql"],
     }
 }

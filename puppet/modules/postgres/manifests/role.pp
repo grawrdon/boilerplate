@@ -21,16 +21,16 @@ define postgres::role($ensure, $password = false) {
         present: {
             # The createuser command always prompts for the password.
             exec { "Create $name postgres role":
-                command => "/usr/bin/psql -c \"CREATE ROLE $name $passtext\"",
-                user => "postgres",
-                unless => "/usr/bin/psql -c '\\du' | grep '^ *$name *|'"
+                command => "/usr/bin/psql -c \"CREATE ROLE $name $passtext CREATEDB LOGIN\"",
+                user    => "postgres",
+                unless  => "/usr/bin/psql -c '\\du' | grep '^ *$name *|'",
             }
         }
         absent: {
             exec { "Remove $name postgres role":
-                command => "/usr/bin/dropeuser $name",
+                command => "/usr/bin/dropuser $name",
                 user => "postgres",
-                onlyif => "/usr/bin/psql -c '\\du' | grep '$name *|'"
+                onlyif => "/usr/bin/psql -c '\\du' | grep '$name *|'",
             }
         }
         default: {
